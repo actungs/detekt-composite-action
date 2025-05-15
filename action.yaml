@@ -2,7 +2,6 @@
 name: "Detekt Composite Action"
 description: |
   GitHub action for setting up and run detekt, a static code analysis for Kotlin.
-  See also [detekt documentation](https://detekt.dev/docs/intro) for more information.
 branding:
   icon: 'check'
   color: 'yellow'
