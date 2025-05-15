@@ -1,7 +1,7 @@
 # Detekt Composite Action
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/actungs/detekt-composite-action?style=flat-square)][releases]
-[![GitHub](https://img.shields.io/github/license/actungs/detekt-composite-action?style=flat-square)](./LICENSE)
+[![GitHub License](https://img.shields.io/github/license/actungs/detekt-composite-action?style=flat-square)](./LICENSE)
 
 A [GitHub composite action][gh-composite-action] to run [detekt][detekt], a static code analysis for Kotlin.
 
