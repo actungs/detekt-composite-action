@@ -1,0 +1,16 @@
+---
+# override default values from: https://github.com/detekt/detekt/blob/master/detekt-core/src/main/resources/default-detekt-config.yml
+console-reports:
+    active: false
+
+style:
+    MaxLineLength:
+        maxLineLength: 142
+        excludeCommentStatements: true
+
+    MagicNumber:
+        active: false
+
+formatting:
+    MaximumLineLength:
+        maxLineLength: 142
