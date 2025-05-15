@@ -1,0 +1,40 @@
+---
+name: Test action
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    types:
+      - "opened"
+      - "reopened"
+      - "synchronize"
+
+jobs:
+  test-run-detekt:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        java: ['17', '21', '24']
+        detekt: ['latest', '1.23.0']
+
+    steps:
+      - name: Checkout code base
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run detekt
+        uses: ./
+        id: detekt
+        with:
+          java_version: '${{ matrix.java }}'
+          detekt_version: '${{ matrix.detekt }}'
+          extra_arguments: '--input .github/test/Main.kt --config .github/test/detekt.yaml --build-upon-default-config'
+
+      - name: Verify detekt report output
+        shell: bash
+        run: |
+          if [[ ! -f "${{ steps.detekt.outputs.report }}" ]]; then
+            echo "Detekt output report file not found"
+            exit 1
+          fi

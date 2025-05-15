@@ -1,0 +1,104 @@
+---
+name: "Detekt Composite Action"
+description: |
+  GitHub action for setting up and run detekt, a static code analysis for Kotlin.
+  See also [detekt documentation](https://detekt.dev/docs/intro) for more information.
+branding:
+  icon: 'check'
+  color: 'yellow'
+
+inputs:
+  detekt_version:
+    description: |
+      Version of detekt to be used.
+      If the default `latest` is used, the action will fetch the latest detekt's release version via GitHub API.
+    required: false
+    default: "latest"
+
+  java_version:
+    description: |
+      Version of Java to be used to run detekt.
+    required: false
+    default: "24"
+
+  java_distribution:
+    description: |
+      Distribution of Java to be used.
+      See https://github.com/actions/setup-java#supported-distributions for a list of supported distribution.
+    required: false
+    default: "temurin"
+
+  with_formatting_plugin:
+    description: |
+      Whether to run detekt with the formatting plugin.
+      The plugin is required if `formatting` is used in your configuration and detekt version >= `1.20.0` is to be used.
+    required: false
+    default: "true"
+
+  extra_arguments:
+    description: |
+      Additional arguments to run detekt with.
+      See https://detekt.dev/docs/gettingstarted/cli/ for a list of available arguments.
+    required: false
+    default: "--build-upon-default-config"
+
+  output_format:
+    description: |
+      Report file format to be outputted after the action finished.
+    required: false
+    default: "md"
+
+outputs:
+  report:
+    description: |
+      Detekt report file in Markdown format.
+    value: ${{ steps.run-detekt.outputs.report }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
+      with:
+        java-version: ${{ inputs.java_version }}
+        distribution: ${{ inputs.java_distribution }}
+
+    - id: version
+      shell: bash
+      run: |
+        VERSION=${{ inputs.detekt_version }}
+        if [[ "$VERSION" == "latest" ]]; then
+          VERSION=$(curl -s -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/detekt/detekt/releases/latest" | jq -r '.tag_name')
+        fi
+        echo "version=${VERSION/v/}" >> "$GITHUB_OUTPUT"
+
+    - id: install-detekt
+      shell: bash
+      run: |
+        curl --location \
+          --silent \
+          --output detekt-cli.jar \
+          "https://github.com/detekt/detekt/releases/download/v${{ steps.version.outputs.version }}/detekt-cli-${{ steps.version.outputs.version }}-all.jar"
+
+    - id: install-detekt-formatting
+      if: inputs.with_formatting_plugin == 'true'
+      shell: bash
+      run: |
+        curl --location \
+          --silent \
+          --output detekt-formatting.jar \
+          "https://github.com/detekt/detekt/releases/download/v${{ steps.version.outputs.version }}/detekt-formatting-${{ steps.version.outputs.version }}.jar"
+
+    - id: build-arguments
+      shell: bash
+      run: |
+        ARGUMENTS="--report ${{ inputs.output_format }}:detekt.${{ inputs.output_format }}"
+        [[ "${{ inputs.with_formatting_plugin }}" == "true" ]] && ARGUMENTS+=" --plugins detekt-formatting.jar"
+        ARGUMENTS+=" ${{ inputs.extra_arguments }}"
+
+        echo "arguments=$ARGUMENTS" >> "$GITHUB_OUTPUT"
+
+    - id: run-detekt
+      shell: bash
+      run: |
+        java -jar detekt-cli.jar ${{ steps.build-arguments.outputs.arguments }}
+        echo "report=detekt.${{ inputs.output_format }}" >> "$GITHUB_OUTPUT"
