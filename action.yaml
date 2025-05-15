@@ -1,9 +1,11 @@
 ---
-name: "Run Detekt"
-
+name: "Detekt Composite Action"
 description: |
-  An action for setting up and run the static code analysis tool detekt for kotlin repository.
-  See also [detekt page on GitHub](https://github.com/detekt/detekt) for more information.
+  GitHub action for setting up and run detekt, a static code analysis for Kotlin.
+  See also [detekt documentation](https://detekt.dev/docs/intro) for more information.
+branding:
+  icon: 'check'
+  color: 'yellow'
 
 inputs:
   detekt_version:
@@ -17,7 +19,7 @@ inputs:
     description: |
       Version of Java to be used to run detekt.
     required: false
-    default: "21"
+    default: "24"
 
   java_distribution:
     description: |
@@ -29,7 +31,7 @@ inputs:
   with_formatting_plugin:
     description: |
       Whether to run detekt with the formatting plugin.
-      The plugin is required if `formatting` is used in your configuration and detekt version >= 1.20.0 is to be used.
+      The plugin is required if `formatting` is used in your configuration and detekt version >= `1.20.0` is to be used.
     required: false
     default: "true"
 

@@ -1,0 +1,16 @@
+---
+# See https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes#configuring-automatically-generated-release-notes
+changelog:
+  categories:
+    - title: ":sparkles: Features"
+      labels:
+        - enhancement
+    - title: ":bug: Fixes"
+      labels:
+        - bug
+    - title: ":arrow_up: Updates"
+      labels:
+        - dependencies
+    - title: ":globe_with_meridians: Others"
+      labels:
+        - "*"
