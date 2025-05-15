@@ -35,6 +35,11 @@ jobs:
           path: ${{ steps.detekt.outputs.report }}
 ```
 
+See this action [releases][releases] or [tags][tags] for all available versions.
+
+[releases]: https://github.com/actungs/detekt-composite-action/releases
+[tags]: https://github.com/actungs/detekt-composite-action/tags
+
 ## Inputs
 
 These are the inputs, which can be given when using the action.
